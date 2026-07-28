@@ -32,10 +32,32 @@ export function VoiceNoteRecorder({
                 audio: true,
             });
             const chunks: Blob[] = [];
-            const mediaRecorder = new MediaRecorder(stream);
-            mediaRecorder.ondataavailable = (e) => chunks.push(e.data);
+            const mimeType = MediaRecorder.isTypeSupported(
+                "audio/webm;codecs=opus",
+            )
+                ? "audio/webm;codecs=opus"
+                : "audio/webm";
+            const mediaRecorder = new MediaRecorder(stream, { mimeType });
+
+            mediaRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0) {
+                    chunks.push(event.data);
+                }
+            };
+
             mediaRecorder.onstop = () => {
-                setBlob(new Blob(chunks, { type: mediaRecorder.mimeType }));
+                const audioBlob = new Blob(chunks, {
+                    type: mediaRecorder.mimeType || "audio/webm",
+                });
+
+                if (audioBlob.size > 0) {
+                    setBlob(audioBlob);
+                } else {
+                    setError(
+                        "The recording was empty. Please record your story again.",
+                    );
+                }
+
                 stream.getTracks().forEach((track) => track.stop());
             };
             recorder.current = mediaRecorder;

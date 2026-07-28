@@ -1,15 +1,72 @@
 import { api } from "./client";
 import type { VoiceNote } from "./types";
 
-function formFor(file: Blob, durationSeconds: number) {
-  const form = new FormData();
-  form.append("file", file, `albo-note.${file.type.includes("ogg") ? "ogg" : "webm"}`);
-  form.append("duration_seconds", String(Math.round(durationSeconds)));
-  return form;
+function normalizeAudioBlob(blob: Blob) {
+    if (blob.type.startsWith("audio/")) {
+        return blob;
+    }
+
+    // MediaRecorder can return an audio-only WebM recording as video/webm.
+    return new Blob([blob], {
+        type: "audio/webm",
+    });
+}
+
+function extensionFor(type: string) {
+    if (type.includes("ogg")) return "ogg";
+    if (type.includes("mpeg")) return "mp3";
+    if (type.includes("mp4") || type.includes("m4a")) return "m4a";
+    if (type.includes("wav")) return "wav";
+    return "webm";
+}
+
+function formFor(blob: Blob, durationSeconds: number) {
+    const audio = normalizeAudioBlob(blob);
+    const form = new FormData();
+
+    form.append("file", audio, `albo-note.${extensionFor(audio.type)}`);
+
+    form.append(
+        "duration_seconds",
+        String(Math.max(0, Math.round(durationSeconds))),
+    );
+
+    return form;
 }
 
 export const voiceNotesApi = {
-  uploadPhoto: (photoId: string, file: Blob, duration: number) => api.post<VoiceNote>(`/photos/${photoId}/voice-note`, formFor(file, duration)).then((r) => r.data),
-  uploadAlbum: (albumId: string, file: Blob, duration: number) => api.post<VoiceNote>(`/albums/${albumId}/voice-note`, formFor(file, duration)).then((r) => r.data),
-  remove: (id: string) => api.delete<void>(`/voice-notes/${id}`).then((r) => r.data),
+    uploadAlbum: (
+        albumId: string,
+        blob: Blob,
+        durationSeconds: number,
+    ) => {
+        const form = formFor(blob, durationSeconds);
+
+        return api
+            .post<VoiceNote>(
+                `/albums/${albumId}/voice-note`,
+                form,
+            )
+            .then((response) => response.data);
+    },
+
+    uploadPhoto: (
+        photoId: string,
+        blob: Blob,
+        durationSeconds: number,
+    ) => {
+        const form = formFor(blob, durationSeconds);
+
+        return api
+            .post<VoiceNote>(
+                `/photos/${photoId}/voice-note`,
+                form,
+            )
+            .then((response) => response.data);
+    },
+
+    remove: (id: string) =>
+        api
+            .delete<void>(`/voice-notes/${id}`)
+            .then((response) => response.data),
 };

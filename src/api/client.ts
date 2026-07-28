@@ -16,6 +16,13 @@ let refreshPromise: Promise<AuthTokens> | null = null;
 api.interceptors.request.use((config) => {
   const token = tokenStore.getAccess();
   if (token) config.headers.Authorization = `Bearer ${token}`;
+
+  if (config.data instanceof FormData) {
+    config.headers.delete("Content-Type");
+  } else {
+    config.headers.set("Content-Type", "application/json");
+  }
+
   return config;
 });
 
