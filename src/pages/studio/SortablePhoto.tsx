@@ -10,24 +10,27 @@ import { useState } from "react";
 import type { Photo } from "../../api/types";
 import { Button } from "../../components/ui/Button";
 import { VoiceNoteRecorder } from "../../components/VoiceNoteRecorder";
-import { voiceNotesApi } from "../../api/voice-notes";
+import { useUploadPhotoVoiceNote } from "../../hooks/queries/voice-notes";
 
 export function SortablePhoto({
     photo,
+    albumId,
+    arriving = false,
     cover,
     onDescription,
     onCover,
     onDelete,
-    onRefresh,
 }: {
     photo: Photo;
+    albumId: string;
+    arriving?: boolean;
     cover: boolean;
     onDescription: (id: string, text: string) => void;
     onCover: (id: string) => void;
     onDelete: (id: string) => void;
-    onRefresh: () => void;
 }) {
     const sortable = useSortable({ id: photo.id });
+    const uploadVoiceNote = useUploadPhotoVoiceNote(albumId, photo.id);
     const [description, setDescription] = useState(photo.description ?? "");
     const style = {
         transform: CSS.Transform.toString(sortable.transform),
@@ -37,7 +40,7 @@ export function SortablePhoto({
         <article
             ref={sortable.setNodeRef}
             style={style}
-            className="workshop-photo"
+            className={`workshop-photo${arriving ? " workshop-photo--arriving" : ""}${sortable.isDragging ? " workshop-photo--dragging" : ""}`}
         >
             <button
                 className="drag-handle"
@@ -87,14 +90,13 @@ export function SortablePhoto({
                     <MicrophoneIcon /> Add the story
                 </summary>
                 <VoiceNoteRecorder
-                    onConfirm={async (blob, seconds) => {
-                        await voiceNotesApi.uploadPhoto(
-                            photo.id,
+                    onConfirm={(blob, seconds, onProgress) =>
+                        uploadVoiceNote.mutateAsync({
                             blob,
-                            seconds,
-                        );
-                        onRefresh();
-                    }}
+                            durationSeconds: seconds,
+                            onProgress,
+                        })
+                    }
                 />
             </details>
         </article>

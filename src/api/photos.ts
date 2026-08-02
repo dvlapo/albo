@@ -1,5 +1,6 @@
 import { api } from "./client";
 import type { Photo } from "./types";
+import { uploadPercentage } from "../types/uploads";
 
 export const photosApi = {
   list: (albumId: string) => api.get<Photo[]>(`/albums/${albumId}/photos`).then((r) => r.data),
@@ -7,7 +8,7 @@ export const photosApi = {
     const form = new FormData();
     form.append("file", file);
     return api.post<Photo>(`/albums/${albumId}/photos`, form, {
-      onUploadProgress: ({ loaded, total }) => onProgress?.(total ? Math.round((loaded / total) * 100) : 0),
+      onUploadProgress: ({ loaded, total }) => onProgress?.(uploadPercentage(loaded, total) ?? -1),
     }).then((r) => r.data);
   },
   update: (id: string, body: { description?: string; position?: number }) => api.patch<Photo>(`/photos/${id}`, body).then((r) => r.data),

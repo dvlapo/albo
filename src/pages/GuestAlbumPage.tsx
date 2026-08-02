@@ -34,8 +34,9 @@ export function GuestAlbumPage() {
                             : "error",
                     );
             }
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         },
+        // Verification intentionally re-enters this request after an expired guest session.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [token],
     );
     const verify = useCallback(

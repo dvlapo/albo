@@ -18,9 +18,11 @@ import {
     ShareNetworkIcon,
     UploadSimpleIcon,
 } from "@phosphor-icons/react";
+import { AnimatePresence } from "motion/react";
 import { useRef, useState } from "react";
+import type { Photo } from "../../api/types";
 import { Link, useParams } from "react-router-dom";
-import { voiceNotesApi } from "../../api/voice-notes";
+import { UploadProgress } from "../../components/UploadProgress";
 import { VoiceNoteRecorder } from "../../components/VoiceNoteRecorder";
 import { Button } from "../../components/ui/Button";
 import {
@@ -34,7 +36,9 @@ import {
     useUpdatePhoto,
     useUploadPhoto,
 } from "../../hooks/queries/photos";
+import { useUploadAlbumVoiceNote } from "../../hooks/queries/voice-notes";
 import { SortablePhoto } from "./SortablePhoto";
+import type { UploadEntry } from "../../types/uploads";
 
 export function AlbumWorkshopPage() {
     const { albumId = "" } = useParams();
@@ -45,26 +49,100 @@ export function AlbumWorkshopPage() {
     const removePhoto = useDeletePhoto(albumId);
     const reorder = useReorderPhotos(albumId);
     const updateAlbum = useUpdateAlbum(albumId);
+    const uploadAlbumVoiceNote = useUploadAlbumVoiceNote(albumId);
     const input = useRef<HTMLInputElement>(null);
-    const [progress, setProgress] = useState<Record<string, number>>({});
+    const [uploads, setUploads] = useState<UploadEntry<File, Photo>[]>([]);
+    const [arrivalLayouts, setArrivalLayouts] = useState<Record<string, string>>(
+        {},
+    );
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
     );
-    const addFiles = async (files: FileList | null) => {
-        for (const file of Array.from(files ?? [])) {
-            if (!file.type.startsWith("image/") || file.size > 20 * 1024 * 1024)
-                continue;
-            await upload.mutateAsync({
-                file,
+    const updateUpload = (
+        id: string,
+        patch: Partial<UploadEntry<File, Photo>>,
+    ) =>
+        setUploads((current) =>
+            current.map((entry) =>
+                entry.id === id ? { ...entry, ...patch } : entry,
+            ),
+        );
+
+    const runUpload = async (entry: UploadEntry<File, Photo>) => {
+        updateUpload(entry.id, {
+            status: "uploading",
+            progress: 0,
+            error: undefined,
+        });
+        try {
+            const photo = await upload.mutateAsync({
+                file: entry.source,
                 onProgress: (value) =>
-                    setProgress((p) => ({ ...p, [file.name]: value })),
+                    updateUpload(entry.id, {
+                        progress: value < 0 ? null : value,
+                    }),
             });
-            setProgress((p) => {
-                const next = { ...p };
-                delete next[file.name];
-                return next;
+            setArrivalLayouts((current) => ({
+                ...current,
+                [photo.id]: `photo-upload-${entry.id}`,
+            }));
+            updateUpload(entry.id, {
+                status: "success",
+                progress: 100,
+                result: photo,
+            });
+            window.setTimeout(() => {
+                setUploads((current) =>
+                    current.filter((item) => item.id !== entry.id),
+                );
+                setArrivalLayouts((current) => {
+                    const next = { ...current };
+                    delete next[photo.id];
+                    return next;
+                });
+            }, 700);
+        } catch (uploadError) {
+            updateUpload(entry.id, {
+                status: "error",
+                error:
+                    uploadError instanceof Error
+                        ? uploadError.message
+                        : "The photo could not be uploaded.",
             });
         }
+    };
+
+    const addFiles = async (files: FileList | null) => {
+        const entries: UploadEntry<File, Photo>[] = Array.from(files ?? []).map(
+            (file) => {
+                const validationError = !file.type.startsWith("image/")
+                    ? "Choose an image file."
+                    : file.size > 20 * 1024 * 1024
+                      ? "This photo is larger than 20 MB."
+                      : undefined;
+                return {
+                    id: crypto.randomUUID(),
+                    label: file.name,
+                    source: file,
+                    status: validationError ? "error" : "queued",
+                    progress: validationError ? null : 0,
+                    error: validationError,
+                };
+            },
+        );
+        setUploads((current) => [...current, ...entries]);
+
+        const queue = entries.filter((entry) => entry.status === "queued");
+        let cursor = 0;
+        const worker = async () => {
+            while (cursor < queue.length) {
+                const entry = queue[cursor++];
+                await runUpload(entry);
+            }
+        };
+        await Promise.all(
+            Array.from({ length: Math.min(3, queue.length) }, worker),
+        );
     };
     const onDragEnd = ({ active, over }: DragEndEvent) => {
         if (!over || active.id === over.id || !photos.data) return;
@@ -115,14 +193,13 @@ export function AlbumWorkshopPage() {
                         <MicrophoneIcon /> Album introduction
                     </p>
                     <VoiceNoteRecorder
-                        onConfirm={async (blob, seconds) => {
-                            await voiceNotesApi.uploadAlbum(
-                                albumId,
+                        onConfirm={(blob, seconds, onProgress) =>
+                            uploadAlbumVoiceNote.mutateAsync({
                                 blob,
-                                seconds,
-                            );
-                            album.refetch();
-                        }}
+                                durationSeconds: seconds,
+                                onProgress,
+                            })
+                        }
                     />
                 </div>
             </section>
@@ -133,7 +210,10 @@ export function AlbumWorkshopPage() {
                     type="file"
                     accept="image/*"
                     multiple
-                    onChange={(e) => addFiles(e.target.files)}
+                    onChange={(event) => {
+                        void addFiles(event.target.files);
+                        event.currentTarget.value = "";
+                    }}
                 />
                 <div>
                     <h2>Add another memory</h2>
@@ -142,12 +222,32 @@ export function AlbumWorkshopPage() {
                 <Button variant="coral" onClick={() => input.current?.click()}>
                     <UploadSimpleIcon /> Choose photos
                 </Button>
-                {Object.entries(progress).map(([name, value]) => (
-                    <div className="upload-progress" key={name}>
-                        <span>{name}</span>
-                        <progress value={value} max="100" />
-                    </div>
-                ))}
+                <AnimatePresence initial={false}>
+                    {uploads.map((entry) => (
+                        <UploadProgress
+                            key={entry.id}
+                            layoutId={`photo-upload-${entry.id}`}
+                            label={entry.label}
+                            status={entry.status}
+                            progress={entry.progress}
+                            error={entry.error}
+                            onRetry={
+                                entry.status === "error" &&
+                                entry.source.type.startsWith("image/") &&
+                                entry.source.size <= 20 * 1024 * 1024
+                                    ? () => void runUpload(entry)
+                                    : undefined
+                            }
+                            onDismiss={() =>
+                                setUploads((current) =>
+                                    current.filter(
+                                        (item) => item.id !== entry.id,
+                                    ),
+                                )
+                            }
+                        />
+                    ))}
+                </AnimatePresence>
             </section>
             {photos.data?.length === 0 ? (
                 <div className="empty-worktable">
@@ -172,6 +272,8 @@ export function AlbumWorkshopPage() {
                                 <SortablePhoto
                                     key={photo.id}
                                     photo={photo}
+                                    albumId={albumId}
+                                    arriving={Boolean(arrivalLayouts[photo.id])}
                                     cover={album.data.coverPhotoId === photo.id}
                                     onDescription={(id, description) =>
                                         updatePhoto.mutate({ id, description })
@@ -189,7 +291,6 @@ export function AlbumWorkshopPage() {
                                         )
                                             removePhoto.mutate(id);
                                     }}
-                                    onRefresh={() => photos.refetch()}
                                 />
                             ))}
                         </div>

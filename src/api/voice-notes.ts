@@ -1,5 +1,6 @@
 import { api } from "./client";
 import type { VoiceNote } from "./types";
+import { uploadPercentage } from "../types/uploads";
 
 function normalizeAudioBlob(blob: Blob) {
     if (blob.type.startsWith("audio/")) {
@@ -39,6 +40,7 @@ export const voiceNotesApi = {
         albumId: string,
         blob: Blob,
         durationSeconds: number,
+        onProgress?: (percentage: number) => void,
     ) => {
         const form = formFor(blob, durationSeconds);
 
@@ -46,6 +48,10 @@ export const voiceNotesApi = {
             .post<VoiceNote>(
                 `/albums/${albumId}/voice-note`,
                 form,
+                {
+                    onUploadProgress: ({ loaded, total }) =>
+                        onProgress?.(uploadPercentage(loaded, total) ?? -1),
+                },
             )
             .then((response) => response.data);
     },
@@ -54,6 +60,7 @@ export const voiceNotesApi = {
         photoId: string,
         blob: Blob,
         durationSeconds: number,
+        onProgress?: (percentage: number) => void,
     ) => {
         const form = formFor(blob, durationSeconds);
 
@@ -61,6 +68,10 @@ export const voiceNotesApi = {
             .post<VoiceNote>(
                 `/photos/${photoId}/voice-note`,
                 form,
+                {
+                    onUploadProgress: ({ loaded, total }) =>
+                        onProgress?.(uploadPercentage(loaded, total) ?? -1),
+                },
             )
             .then((response) => response.data);
     },
