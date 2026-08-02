@@ -10,6 +10,8 @@ import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { TextField } from "../../components/forms/Fields";
 import { Button } from "../../components/ui/Button";
+import { ConfirmDialog } from "../../components/ui/ConfirmDialog";
+import type { ShareLink } from "../../api/types";
 import {
     useCreateShareLink,
     useRevokeShareLink,
@@ -23,6 +25,8 @@ export function SharePage() {
     const create = useCreateShareLink(albumId);
     const revoke = useRevokeShareLink(albumId);
     const [copied, setCopied] = useState("");
+    const [linkToRevoke, setLinkToRevoke] = useState<ShareLink | null>(null);
+    const [revokeError, setRevokeError] = useState("");
     const copy = async (url: string, id: string) => {
         await navigator.clipboard.writeText(url);
         setCopied(id);
@@ -133,7 +137,10 @@ export function SharePage() {
                                     variant="ghost"
                                     size="sm"
                                     aria-label="Revoke link"
-                                    onClick={() => revoke.mutate(link.id)}
+                                    onClick={() => {
+                                        setRevokeError("");
+                                        setLinkToRevoke(link);
+                                    }}
                                 >
                                     <TrashIcon />
                                 </Button>
@@ -142,6 +149,31 @@ export function SharePage() {
                     </div>
                 </section>
             </div>
+            <ConfirmDialog
+                open={Boolean(linkToRevoke)}
+                onOpenChange={(open) => !open && setLinkToRevoke(null)}
+                title="Revoke this share link?"
+                description="Anyone using this URL will lose access immediately. Your album, photos, and voice notes will stay safely in your studio."
+                confirmLabel="Revoke link"
+                cancelLabel="Keep link"
+                pendingLabel="Revoking…"
+                pending={revoke.isPending}
+                error={revokeError}
+                onConfirm={async () => {
+                    if (!linkToRevoke) return;
+                    setRevokeError("");
+                    try {
+                        await revoke.mutateAsync(linkToRevoke.id);
+                        setLinkToRevoke(null);
+                    } catch (error) {
+                        setRevokeError(
+                            error instanceof Error
+                                ? error.message
+                                : "The share link could not be revoked.",
+                        );
+                    }
+                }}
+            />
         </div>
     );
 }

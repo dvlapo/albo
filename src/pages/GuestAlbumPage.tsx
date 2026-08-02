@@ -145,6 +145,9 @@ export function GuestAlbumPage() {
                         <VoiceNotePlayer
                             src={album.voiceNotes[0].url}
                             label="Play the introduction"
+                            durationSeconds={
+                                album.voiceNotes[0].durationSeconds
+                            }
                         />
                     )}
                 </div>

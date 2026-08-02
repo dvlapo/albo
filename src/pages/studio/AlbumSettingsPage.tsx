@@ -1,8 +1,10 @@
 import { Form, Formik } from "formik";
 import { ArrowLeftIcon, TrashIcon } from "@phosphor-icons/react";
+import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { TextAreaField, TextField } from "../../components/forms/Fields";
 import { Button } from "../../components/ui/Button";
+import { ConfirmDialog } from "../../components/ui/ConfirmDialog";
 import {
     useAlbumQuery,
     useDeleteAlbum,
@@ -16,8 +18,12 @@ export function AlbumSettingsPage() {
     const update = useUpdateAlbum(albumId);
     const remove = useDeleteAlbum(albumId);
     const navigate = useNavigate();
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [deleteError, setDeleteError] = useState("");
+
     if (!album.data)
         return <div className="page-loader">Opening settings…</div>;
+
     return (
         <div className="form-page">
             <Link to={`/studio/albums/${albumId}`} className="back-link">
@@ -59,21 +65,39 @@ export function AlbumSettingsPage() {
                     </p>
                     <Button
                         variant="paper"
-                        onClick={async () => {
-                            if (
-                                confirm(
-                                    `Permanently delete “${album.data?.title}”?`,
-                                )
-                            ) {
-                                await remove.mutateAsync();
-                                navigate("/studio");
-                            }
+                        onClick={() => {
+                            setDeleteError("");
+                            setDeleteDialogOpen(true);
                         }}
                     >
                         <TrashIcon /> Delete album
                     </Button>
                 </div>
             </section>
+            <ConfirmDialog
+                open={deleteDialogOpen}
+                onOpenChange={setDeleteDialogOpen}
+                title={`Delete “${album.data.title}”?`}
+                description="This permanently removes the album, every photo and voice note inside it, and all active share links. This action cannot be undone."
+                confirmLabel="Delete album"
+                cancelLabel="Keep album"
+                pendingLabel="Deleting album…"
+                pending={remove.isPending}
+                error={deleteError}
+                onConfirm={async () => {
+                    setDeleteError("");
+                    try {
+                        await remove.mutateAsync();
+                        navigate("/studio");
+                    } catch (error) {
+                        setDeleteError(
+                            error instanceof Error
+                                ? error.message
+                                : "The album could not be deleted.",
+                        );
+                    }
+                }}
+            />
         </div>
     );
 }

@@ -25,7 +25,10 @@ function PhotoPage({ photo }: { photo: PublicPhoto }) {
                 {photo.description || "A moment worth keeping."}
             </figcaption>
             {photo.voiceNotes[0] && (
-                <VoiceNotePlayer src={photo.voiceNotes[0].url} />
+                <VoiceNotePlayer
+                    src={photo.voiceNotes[0].url}
+                    durationSeconds={photo.voiceNotes[0].durationSeconds}
+                />
             )}
         </figure>
     );

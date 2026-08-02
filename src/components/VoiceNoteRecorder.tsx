@@ -5,15 +5,20 @@ import type { UploadStatus } from "../types/uploads";
 import { UploadProgress } from "./UploadProgress";
 import { VoiceNotePlayer } from "./VoiceNotePlayer";
 import { Button } from "./ui/Button";
+import { ConfirmDialog } from "./ui/ConfirmDialog";
 
 export function VoiceNoteRecorder({
     onConfirm,
+    existingNote,
+    onDelete,
 }: {
     onConfirm: (
         blob: Blob,
         seconds: number,
         onProgress: (percentage: number) => void,
     ) => Promise<VoiceNote>;
+    existingNote?: VoiceNote;
+    onDelete?: (voiceNoteId: string) => Promise<void>;
 }) {
     const recorder = useRef<MediaRecorder | null>(null);
     const timer = useRef<number | null>(null);
@@ -24,7 +29,11 @@ export function VoiceNoteRecorder({
     const [uploadStatus, setUploadStatus] = useState<UploadStatus | null>(null);
     const [uploadProgress, setUploadProgress] = useState<number | null>(null);
     const [savedNote, setSavedNote] = useState<VoiceNote | null>(null);
+    const [deleting, setDeleting] = useState(false);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [deleteError, setDeleteError] = useState("");
     const [error, setError] = useState("");
+    const visibleNote = savedNote ?? existingNote;
 
     useEffect(() => {
         if (!blob) {
@@ -129,9 +138,62 @@ export function VoiceNoteRecorder({
         setError("");
     };
 
+    const remove = async () => {
+        if (!visibleNote || !onDelete || deleting) return;
+
+        setDeleteError("");
+        setDeleting(true);
+        try {
+            await onDelete(visibleNote.id);
+            setSavedNote(null);
+            setDeleteDialogOpen(false);
+        } catch (deleteFailure) {
+            setDeleteError(
+                deleteFailure instanceof Error
+                    ? deleteFailure.message
+                    : "The voice note could not be deleted.",
+            );
+        } finally {
+            setDeleting(false);
+        }
+    };
+
     return (
         <div className="recorder">
-            {!recording && !blob && !savedNote && (
+            {!recording && !blob && visibleNote && (
+                <div className="voice-note-existing">
+                    <VoiceNotePlayer
+                        src={visibleNote.url}
+                        label="Play saved story"
+                        durationSeconds={visibleNote.durationSeconds}
+                    />
+                    <div className="voice-note-actions">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            disabled={deleting}
+                            onClick={start}
+                        >
+                            <MicrophoneIcon /> Replace
+                        </Button>
+                        {onDelete && (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="voice-note-delete"
+                                disabled={deleting}
+                                onClick={() => {
+                                    setDeleteError("");
+                                    setDeleteDialogOpen(true);
+                                }}
+                            >
+                                <TrashIcon /> Delete
+                            </Button>
+                        )}
+                    </div>
+                </div>
+            )}
+            {!recording && !blob && !visibleNote && (
                 <Button variant="paper" size="sm" onClick={start}>
                     <MicrophoneIcon /> Record a story
                 </Button>
@@ -144,14 +206,6 @@ export function VoiceNoteRecorder({
                         {String(elapsed % 60).padStart(2, "0")}
                     </span>
                 </Button>
-            )}
-            {savedNote && !blob && (
-                <div className="voice-note-saved">
-                    <VoiceNotePlayer
-                        src={savedNote.url}
-                        label="Play saved story"
-                    />
-                </div>
             )}
             {blob && uploadStatus !== "success" && (
                 <div className="recording-preview">
@@ -193,6 +247,18 @@ export function VoiceNoteRecorder({
                     {error}
                 </small>
             )}
+            <ConfirmDialog
+                open={deleteDialogOpen}
+                onOpenChange={setDeleteDialogOpen}
+                title="Delete this voice note?"
+                description="This recording will be removed from the album permanently. The photo and its written story will stay exactly where they are."
+                confirmLabel="Delete voice note"
+                cancelLabel="Keep voice note"
+                pendingLabel="Deleting…"
+                pending={deleting}
+                error={deleteError}
+                onConfirm={remove}
+            />
         </div>
     );
 }

@@ -36,7 +36,10 @@ import {
     useUpdatePhoto,
     useUploadPhoto,
 } from "../../hooks/queries/photos";
-import { useUploadAlbumVoiceNote } from "../../hooks/queries/voice-notes";
+import {
+    useDeleteAlbumVoiceNote,
+    useUploadAlbumVoiceNote,
+} from "../../hooks/queries/voice-notes";
 import { SortablePhoto } from "./SortablePhoto";
 import type { UploadEntry } from "../../types/uploads";
 
@@ -50,11 +53,12 @@ export function AlbumWorkshopPage() {
     const reorder = useReorderPhotos(albumId);
     const updateAlbum = useUpdateAlbum(albumId);
     const uploadAlbumVoiceNote = useUploadAlbumVoiceNote(albumId);
+    const deleteAlbumVoiceNote = useDeleteAlbumVoiceNote(albumId);
     const input = useRef<HTMLInputElement>(null);
     const [uploads, setUploads] = useState<UploadEntry<File, Photo>[]>([]);
-    const [arrivalLayouts, setArrivalLayouts] = useState<Record<string, string>>(
-        {},
-    );
+    const [arrivalLayouts, setArrivalLayouts] = useState<
+        Record<string, string>
+    >({});
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
     );
@@ -193,6 +197,10 @@ export function AlbumWorkshopPage() {
                         <MicrophoneIcon /> Album introduction
                     </p>
                     <VoiceNoteRecorder
+                        existingNote={album.data.voiceNotes[0]}
+                        onDelete={(voiceNoteId) =>
+                            deleteAlbumVoiceNote.mutateAsync(voiceNoteId)
+                        }
                         onConfirm={(blob, seconds, onProgress) =>
                             uploadAlbumVoiceNote.mutateAsync({
                                 blob,
@@ -283,14 +291,9 @@ export function AlbumWorkshopPage() {
                                             cover_photo_id: id,
                                         })
                                     }
-                                    onDelete={(id) => {
-                                        if (
-                                            confirm(
-                                                "Remove this photo from the album?",
-                                            )
-                                        )
-                                            removePhoto.mutate(id);
-                                    }}
+                                    onDelete={(id) =>
+                                        removePhoto.mutateAsync(id)
+                                    }
                                 />
                             ))}
                         </div>
