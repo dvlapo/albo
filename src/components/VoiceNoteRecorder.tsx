@@ -1,4 +1,4 @@
-import { Microphone, Stop, Trash } from "@phosphor-icons/react";
+import { MicrophoneIcon, StopIcon, TrashIcon } from "@phosphor-icons/react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "./ui/Button";
 
@@ -82,12 +82,12 @@ export function VoiceNoteRecorder({
         <div className="recorder">
             {!recording && !blob && (
                 <Button variant="paper" size="sm" onClick={start}>
-                    <Microphone /> Record a story
+                    <MicrophoneIcon /> Record a story
                 </Button>
             )}
             {recording && (
                 <Button variant="coral" size="sm" onClick={stop}>
-                    <Stop weight="fill" /> Stop{" "}
+                    <StopIcon weight="fill" /> Stop{" "}
                     <span className="tabular">
                         {Math.floor(elapsed / 60)}:
                         {String(elapsed % 60).padStart(2, "0")}
@@ -111,7 +111,7 @@ export function VoiceNoteRecorder({
                         aria-label="Discard recording"
                         onClick={() => setBlob(null)}
                     >
-                        <Trash />
+                        <TrashIcon />
                     </Button>
                 </div>
             )}

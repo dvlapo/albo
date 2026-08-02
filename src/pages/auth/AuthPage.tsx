@@ -1,5 +1,5 @@
 import { Form, Formik } from "formik";
-import { ArrowRight } from "@phosphor-icons/react";
+import { ArrowRightIcon } from "@phosphor-icons/react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../../auth/AuthContext";
@@ -98,7 +98,7 @@ export function AuthPage({ mode }: { mode: "login" | "signup" }) {
                                     : signup
                                       ? "Make my first album"
                                       : "Open my studio"}{" "}
-                                <ArrowRight />
+                                <ArrowRightIcon />
                             </Button>
                         </Form>
                     )}

@@ -12,11 +12,11 @@ import {
     SortableContext,
 } from "@dnd-kit/sortable";
 import {
-    ArrowLeft,
-    Gear,
-    Microphone,
-    ShareNetwork,
-    UploadSimple,
+    ArrowLeftIcon,
+    GearIcon,
+    MicrophoneIcon,
+    ShareNetworkIcon,
+    UploadSimpleIcon,
 } from "@phosphor-icons/react";
 import { useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -82,7 +82,7 @@ export function AlbumWorkshopPage() {
         <div className="workshop">
             <header className="workshop-bar">
                 <Link to="/studio" className="back-link">
-                    <ArrowLeft /> Shelf
+                    <ArrowLeftIcon /> Shelf
                 </Link>
                 <div>
                     <p className="eyebrow">On the worktable</p>
@@ -93,13 +93,13 @@ export function AlbumWorkshopPage() {
                         className="button button--paper button--sm"
                         to="share"
                     >
-                        <ShareNetwork /> Share
+                        <ShareNetworkIcon /> Share
                     </Link>
                     <Link
                         className="button button--paper button--sm"
                         to="settings"
                     >
-                        <Gear /> Settings
+                        <GearIcon /> Settings
                     </Link>
                 </nav>
             </header>
@@ -112,7 +112,7 @@ export function AlbumWorkshopPage() {
                 </div>
                 <div>
                     <p>
-                        <Microphone /> Album introduction
+                        <MicrophoneIcon /> Album introduction
                     </p>
                     <VoiceNoteRecorder
                         onConfirm={async (blob, seconds) => {
@@ -140,7 +140,7 @@ export function AlbumWorkshopPage() {
                     <p>JPG, PNG, HEIC, or WebP up to 20 MB each.</p>
                 </div>
                 <Button variant="coral" onClick={() => input.current?.click()}>
-                    <UploadSimple /> Choose photos
+                    <UploadSimpleIcon /> Choose photos
                 </Button>
                 {Object.entries(progress).map(([name, value]) => (
                     <div className="upload-progress" key={name}>
