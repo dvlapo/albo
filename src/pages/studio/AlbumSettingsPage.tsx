@@ -59,12 +59,12 @@ export function AlbumSettingsPage() {
                 </Formik>
                 <div className="danger-zone">
                     <h2>Remove this album</h2>
-                    <p>
+                    <p className="my-2">
                         This permanently removes its photos, voice notes, and
                         share links.
                     </p>
                     <Button
-                        variant="paper"
+                        variant="coral"
                         onClick={() => {
                             setDeleteError("");
                             setDeleteDialogOpen(true);
