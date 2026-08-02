@@ -9,9 +9,9 @@ import { Link } from "react-router-dom";
 import { Button } from "../components/ui/Button";
 
 const demoPhotos = [
-    "https://images.unsplash.com/photo-1504151932400-72d4384f04b3?auto=format&fit=crop&w=900&q=80",
-    "https://images.unsplash.com/photo-1592599457566-c660153d9548?auto=format&fit=crop&w=900&q=80",
-    "https://images.unsplash.com/photo-1472653431158-6364773b2a56?auto=format&fit=crop&w=900&q=80",
+    "https://images.unsplash.com/photo-1759416782439-38871fb1083b?auto=format&fit=crop&w=900&q=80",
+    "https://images.unsplash.com/photo-1642420290986-c7a55bab708f?auto=format&fit=crop&w=900&q=80",
+    "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=900&q=80",
 ];
 
 export function LandingPage() {
