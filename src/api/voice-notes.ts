@@ -45,14 +45,10 @@ export const voiceNotesApi = {
         const form = formFor(blob, durationSeconds);
 
         return api
-            .post<VoiceNote>(
-                `/albums/${albumId}/voice-note`,
-                form,
-                {
-                    onUploadProgress: ({ loaded, total }) =>
-                        onProgress?.(uploadPercentage(loaded, total) ?? -1),
-                },
-            )
+            .post<VoiceNote>(`/albums/${albumId}/voice-note`, form, {
+                onUploadProgress: ({ loaded, total }) =>
+                    onProgress?.(uploadPercentage(loaded, total) ?? -1),
+            })
             .then((response) => response.data);
     },
 
@@ -65,14 +61,10 @@ export const voiceNotesApi = {
         const form = formFor(blob, durationSeconds);
 
         return api
-            .post<VoiceNote>(
-                `/photos/${photoId}/voice-note`,
-                form,
-                {
-                    onUploadProgress: ({ loaded, total }) =>
-                        onProgress?.(uploadPercentage(loaded, total) ?? -1),
-                },
-            )
+            .post<VoiceNote>(`/photos/${photoId}/voice-note`, form, {
+                onUploadProgress: ({ loaded, total }) =>
+                    onProgress?.(uploadPercentage(loaded, total) ?? -1),
+            })
             .then((response) => response.data);
     },
 

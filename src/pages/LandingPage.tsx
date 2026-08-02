@@ -5,7 +5,7 @@ import {
     StackIcon,
 } from "@phosphor-icons/react";
 import { motion, useReducedMotion } from "motion/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/Button";
 
 const demoPhotos = [
@@ -16,6 +16,8 @@ const demoPhotos = [
 
 export function LandingPage() {
     const reduced = useReducedMotion();
+    const navigate = useNavigate();
+
     return (
         <main className="landing">
             <nav className="landing-nav">
@@ -27,7 +29,7 @@ export function LandingPage() {
                     <Button
                         variant="ink"
                         size="sm"
-                        onClick={() => location.assign("/signup")}
+                        onClick={() => navigate("/signup")}
                     >
                         Make an album <ArrowRightIcon />
                     </Button>

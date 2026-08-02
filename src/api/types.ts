@@ -1,14 +1,70 @@
 export type AuthTokens = { access_token: string; refresh_token: string };
-export type VoiceNote = { id: string; photoId: string | null; albumId: string | null; url: string; durationSeconds: number; createdAt: string };
-export type Photo = { id: string; albumId: string; url: string; description: string | null; position: number; uploadedAt: string; voiceNotes?: VoiceNote[] };
-export type Album = { id: string; userId: string; title: string; description: string | null; coverPhotoId: string | null; createdAt: string; updatedAt: string };
-export type AlbumListItem = Album & { coverPhoto: Photo | null; _count: { photos: number } };
-export type AlbumDetail = Album & { coverPhoto: Photo | null; voiceNotes: VoiceNote[]; _count: { photos: number } };
-export type ShareLink = { id: string; token: string; expiresAt: string | null; createdAt: string };
+export type VoiceNote = {
+    id: string;
+    photoId: string | null;
+    albumId: string | null;
+    url: string;
+    durationSeconds: number;
+    createdAt: string;
+};
+export type Photo = {
+    id: string;
+    albumId: string;
+    url: string;
+    description: string | null;
+    position: number;
+    uploadedAt: string;
+    voiceNotes?: VoiceNote[];
+};
+export type Album = {
+    id: string;
+    userId: string;
+    title: string;
+    description: string | null;
+    coverPhotoId: string | null;
+    createdAt: string;
+    updatedAt: string;
+};
+export type AlbumListItem = Album & {
+    coverPhoto: Photo | null;
+    _count: { photos: number };
+};
+export type AlbumDetail = Album & {
+    coverPhoto: Photo | null;
+    voiceNotes: VoiceNote[];
+    _count: { photos: number };
+};
+export type ShareLink = {
+    id: string;
+    token: string;
+    expiresAt: string | null;
+    createdAt: string;
+};
 export type CreatedShareLink = ShareLink & { url: string };
-export type PublicVoiceNote = { id: string; url: string; durationSeconds: number };
-export type PublicPhoto = { id: string; url: string; description: string | null; position: number; voiceNotes: PublicVoiceNote[] };
-export type PublicAlbum = { id: string; title: string; description: string | null; coverPhotoId: string | null; voiceNotes: PublicVoiceNote[]; photos: PublicPhoto[] };
+export type PublicVoiceNote = {
+    id: string;
+    url: string;
+    durationSeconds: number;
+};
+export type PublicPhoto = {
+    id: string;
+    url: string;
+    description: string | null;
+    position: number;
+    voiceNotes: PublicVoiceNote[];
+};
+export type PublicAlbum = {
+    id: string;
+    title: string;
+    description: string | null;
+    coverPhotoId: string | null;
+    voiceNotes: PublicVoiceNote[];
+    photos: PublicPhoto[];
+};
 export type AlbumViewMode = "spread" | "stack";
 export type GuestSessions = Record<string, string>;
-export type ApiErrorBody = { statusCode: number; message: string | string[]; error?: string };
+export type ApiErrorBody = {
+    statusCode: number;
+    message: string | string[];
+    error?: string;
+};
