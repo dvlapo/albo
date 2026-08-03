@@ -17,7 +17,7 @@ export function AuthPage({ mode }: { mode: "login" | "signup" }) {
     const signup = mode === "signup";
     return (
         <main className="auth-page">
-            <Link to="/" className="wordmark">
+            <Link to="/" className="wordmark squircle">
                 albo<span>.</span>
             </Link>
             <section className="album-cover">
@@ -105,7 +105,7 @@ export function AuthPage({ mode }: { mode: "login" | "signup" }) {
                 </Formik>
                 <p className="auth-switch">
                     {signup ? "Already keeping memories?" : "New to Albo?"}{" "}
-                    <Link to={signup ? "/login" : "/signup"}>
+                    <Link to={signup ? "/login" : "/signup"} className="squircle">
                         {signup ? "Log in" : "Create an account"}
                     </Link>
                 </p>

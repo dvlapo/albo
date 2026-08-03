@@ -10,7 +10,7 @@ export function AppShell() {
             <header className="studio-nav">
                 <Link
                     to="/studio"
-                    className="wordmark"
+                    className="wordmark squircle"
                     aria-label="Albo studio"
                 >
                     albo<span>.</span>

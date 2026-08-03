@@ -28,7 +28,7 @@ export function TextField({
                     id={inputId}
                     name={name}
                     type={isPassword && passwordVisible ? "text" : props.type}
-                    className="paper-input"
+                    className="paper-input squircle"
                     aria-invalid={meta.touched && Boolean(meta.error)}
                 />
                 {isPassword && (

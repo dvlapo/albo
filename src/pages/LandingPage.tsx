@@ -21,11 +21,13 @@ export function LandingPage() {
     return (
         <main className="landing">
             <nav className="landing-nav">
-                <Link to="/" className="wordmark">
+                <Link to="/" className="wordmark squircle">
                     albo<span>.</span>
                 </Link>
                 <div>
-                    <Link to="/login">Log in</Link>
+                    <Link to="/login" className="squircle">
+                        Log in
+                    </Link>
                     <Button
                         variant="ink"
                         size="sm"
@@ -52,7 +54,7 @@ export function LandingPage() {
                     </p>
                     <div className="hero-actions">
                         <Link
-                            className="button button--coral button--lg"
+                            className="button button--coral button--lg squircle"
                             to="/signup"
                         >
                             Start your album <ArrowRightIcon />
@@ -129,7 +131,10 @@ export function LandingPage() {
             <section className="closing">
                 <p>Some stories deserve more than a camera roll.</p>
                 <h2>Put yours on the coffee table.</h2>
-                <Link className="button button--ink button--lg" to="/signup">
+                <Link
+                    className="button button--ink button--lg squircle"
+                    to="/signup"
+                >
                     Make your first Albo <ArrowRightIcon />
                 </Link>
             </section>

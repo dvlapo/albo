@@ -163,7 +163,7 @@ export function AlbumWorkshopPage() {
     return (
         <div className="workshop">
             <header className="workshop-bar">
-                <Link to="/studio" className="back-link">
+                <Link to="/studio" className="back-link squircle">
                     <ArrowLeftIcon /> Shelf
                 </Link>
                 <div>
@@ -172,13 +172,13 @@ export function AlbumWorkshopPage() {
                 </div>
                 <nav>
                     <Link
-                        className="button button--paper button--sm"
+                            className="button button--paper button--sm squircle"
                         to="share"
                     >
                         <ShareNetworkIcon /> Share
                     </Link>
                     <Link
-                        className="button button--paper button--sm"
+                            className="button button--paper button--sm squircle"
                         to="settings"
                     >
                         <GearIcon /> Settings

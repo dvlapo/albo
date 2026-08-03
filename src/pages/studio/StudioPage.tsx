@@ -13,7 +13,7 @@ export function StudioPage() {
                     <p>Pick one up, or begin with a blank cover.</p>
                 </div>
                 <Link
-                    className="button button--coral button--lg"
+                    className="button button--coral button--lg squircle"
                     to="/studio/albums/new"
                 >
                     <PlusIcon /> New album
@@ -42,7 +42,7 @@ export function StudioPage() {
                         behind it.
                     </p>
                     <Link
-                        className="button button--ink button--md"
+                        className="button button--ink button--md squircle"
                         to="/studio/albums/new"
                     >
                         Make the first one <ArrowRightIcon />
@@ -52,7 +52,7 @@ export function StudioPage() {
             <div className="album-grid">
                 {albums.data?.map((album, i) => (
                     <Link
-                        className="album-card"
+                            className="album-card squircle"
                         to={`/studio/albums/${album.id}`}
                         key={album.id}
                         style={

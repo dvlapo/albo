@@ -76,7 +76,7 @@ export function GuestAlbumPage() {
     if (state === "passkey")
         return (
             <main className="guest-gate">
-                <Link to="/" className="wordmark">
+                <Link to="/" className="wordmark squircle">
                     albo<span>.</span>
                 </Link>
                 <section className="passkey-card">
@@ -127,14 +127,14 @@ export function GuestAlbumPage() {
                           ? "Too many passkey attempts. Try again in about a minute."
                           : message}
                 </p>
-                <Link to="/">Return to Albo</Link>
+                <Link to="/" className="squircle">Return to Albo</Link>
             </div>
         );
     if (!album) return null;
     return (
         <main className="guest-album">
             <header>
-                <Link to="/" className="wordmark">
+                <Link to="/" className="wordmark squircle">
                     albo<span>.</span>
                 </Link>
                 <div>

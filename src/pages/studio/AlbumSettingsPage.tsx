@@ -26,7 +26,7 @@ export function AlbumSettingsPage() {
 
     return (
         <div className="form-page">
-            <Link to={`/studio/albums/${albumId}`} className="back-link">
+            <Link to={`/studio/albums/${albumId}`} className="back-link squircle">
                 <ArrowLeftIcon /> Back to album
             </Link>
             <section className="paper-panel settings">

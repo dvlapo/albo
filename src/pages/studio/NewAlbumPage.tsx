@@ -11,7 +11,7 @@ export function NewAlbumPage() {
     const navigate = useNavigate();
     return (
         <div className="form-page">
-            <Link to="/studio" className="back-link">
+            <Link to="/studio" className="back-link squircle">
                 <ArrowLeftIcon /> Back to the shelf
             </Link>
             <section className="new-album-book">

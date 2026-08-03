@@ -199,6 +199,7 @@ img {
 }
 .hero-copy {
     max-width: 610px;
+    isolation: isolate;
 }
 .hero h1 {
     font-size: clamp(3.5rem, 7.4vw, 7rem);
@@ -1186,6 +1187,16 @@ img {
     place-items: center;
     font: italic 1.5rem "Newsreader Variable";
 }
+
+.squircle {
+    --squircle-radius: 20px;
+
+    @supports (corner-shape: squircle) {
+        corner-shape: squircle;
+        border-radius: var(--squircle-radius);
+    }
+}
+
 @keyframes shimmer {
     to {
         background-position: -200% 0;
