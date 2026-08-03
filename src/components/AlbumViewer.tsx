@@ -4,6 +4,7 @@ import {
     BookOpenIcon,
     StackIcon,
 } from "@phosphor-icons/react";
+import { play } from "cuelume";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useState } from "react";
 import type { AlbumViewMode, PublicAlbum, PublicPhoto } from "../api/types";
@@ -43,7 +44,11 @@ export function AlbumViewer({ album }: { album: PublicAlbum }) {
     const last = Math.max(0, album.photos.length - 1);
     const move = useCallback(
         (delta: number) =>
-            setIndex((i) => Math.max(0, Math.min(last, i + delta))),
+            setIndex((current) => {
+                const next = Math.max(0, Math.min(last, current + delta));
+                if (next !== current) play("page", { volume: 0.42 });
+                return next;
+            }),
         [last],
     );
     useEffect(() => {
@@ -69,12 +74,14 @@ export function AlbumViewer({ album }: { album: PublicAlbum }) {
             <header className="viewer-toolbar">
                 <div className="mode-toggle" aria-label="Album view">
                     <button
+                        data-cuelume-toggle="toggle"
                         aria-pressed={mode === "spread"}
                         onClick={() => chooseMode("spread")}
                     >
                         <BookOpenIcon /> Album
                     </button>
                     <button
+                        data-cuelume-toggle="toggle"
                         aria-pressed={mode === "stack"}
                         onClick={() => chooseMode("stack")}
                     >
@@ -175,6 +182,7 @@ export function AlbumViewer({ album }: { album: PublicAlbum }) {
             <div className="viewer-controls">
                 <Button
                     variant="paper"
+                    sound={false}
                     aria-label="Previous photograph"
                     disabled={index === 0}
                     onClick={() => move(-1)}
@@ -183,6 +191,7 @@ export function AlbumViewer({ album }: { album: PublicAlbum }) {
                 </Button>
                 <Button
                     variant="paper"
+                    sound={false}
                     aria-label="Next photograph"
                     disabled={index === last}
                     onClick={() => move(1)}

@@ -33,6 +33,7 @@ export function TextField({
                 />
                 {isPassword && (
                     <button
+                        data-cuelume-toggle="toggle"
                         type="button"
                         className="password-toggle"
                         aria-label={

@@ -6,6 +6,7 @@ import {
     ShareNetworkIcon,
     TrashIcon,
 } from "@phosphor-icons/react";
+import { play } from "cuelume";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { TextField } from "../../components/forms/Fields";
@@ -29,6 +30,7 @@ export function SharePage() {
     const [revokeError, setRevokeError] = useState("");
     const copy = async (url: string, id: string) => {
         await navigator.clipboard.writeText(url);
+        play("success", { volume: 0.4 });
         setCopied(id);
         window.setTimeout(() => setCopied(""), 1500);
     };
@@ -164,6 +166,7 @@ export function SharePage() {
                     setRevokeError("");
                     try {
                         await revoke.mutateAsync(linkToRevoke.id);
+                        play("droplet", { volume: 0.38 });
                         setLinkToRevoke(null);
                     } catch (error) {
                         setRevokeError(
