@@ -127,7 +127,9 @@ export function GuestAlbumPage() {
                           ? "Too many passkey attempts. Try again in about a minute."
                           : message}
                 </p>
-                <Link to="/" className="squircle">Return to Albo</Link>
+                <Link to="/" className="squircle">
+                    Return to Albo
+                </Link>
             </div>
         );
     if (!album) return null;
@@ -138,18 +140,22 @@ export function GuestAlbumPage() {
                     albo<span>.</span>
                 </Link>
                 <div>
-                    <p className="eyebrow">You’ve been handed an album</p>
+                    <p className="eyebrow my-12!">
+                        You’ve been handed an album
+                    </p>
                     <h1>{album.title}</h1>
                     <p>{album.description}</p>
-                    {album.voiceNotes[0] && (
-                        <VoiceNotePlayer
-                            src={album.voiceNotes[0].url}
-                            label="Play the introduction"
-                            durationSeconds={
-                                album.voiceNotes[0].durationSeconds
-                            }
-                        />
-                    )}
+                    <div className="w-fit mx-auto">
+                        {album.voiceNotes[0] && (
+                            <VoiceNotePlayer
+                                src={album.voiceNotes[0].url}
+                                label="Play the introduction"
+                                durationSeconds={
+                                    album.voiceNotes[0].durationSeconds
+                                }
+                            />
+                        )}
+                    </div>
                 </div>
             </header>
             <AlbumViewer album={album} />

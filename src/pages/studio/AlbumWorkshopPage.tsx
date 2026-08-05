@@ -172,13 +172,13 @@ export function AlbumWorkshopPage() {
                 </div>
                 <nav>
                     <Link
-                            className="button button--paper button--sm squircle"
+                        className="button button--paper button--sm squircle"
                         to="share"
                     >
                         <ShareNetworkIcon /> Share
                     </Link>
                     <Link
-                            className="button button--paper button--sm squircle"
+                        className="button button--paper button--sm squircle"
                         to="settings"
                     >
                         <GearIcon /> Settings

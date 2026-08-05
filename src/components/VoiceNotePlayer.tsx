@@ -4,6 +4,8 @@ import { Button } from "./ui/Button";
 
 let activeAudio: HTMLAudioElement | null = null;
 
+export type VoiceNotePlayerJustify = "center" | "between";
+
 function normalizeDuration(value?: number) {
     return value != null && Number.isFinite(value) ? Math.max(0, value) : null;
 }
@@ -17,10 +19,12 @@ export function VoiceNotePlayer({
     src,
     label = "Play story",
     durationSeconds,
+    justify = "center",
 }: {
     src: string;
     label?: string;
     durationSeconds?: number;
+    justify?: VoiceNotePlayerJustify;
 }) {
     const ref = useRef<HTMLAudioElement>(null);
     const [playing, setPlaying] = useState(false);
@@ -79,7 +83,9 @@ export function VoiceNotePlayer({
         remainingSeconds == null ? null : formatDuration(remainingSeconds);
 
     return (
-        <div className="voice-note-player">
+        <div
+            className={`voice-note-player voice-note-player--${justify}`}
+        >
             <audio ref={ref} src={src} preload="metadata" />
             <Button variant="paper" size="sm" sound={false} onClick={toggle}>
                 {playing ? (
