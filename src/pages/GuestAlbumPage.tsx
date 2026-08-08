@@ -134,7 +134,7 @@ export function GuestAlbumPage() {
         );
     if (!album) return null;
     return (
-        <main className="guest-album">
+        <main className="guest-album overflow-x-hidden">
             <header>
                 <Link to="/" className="wordmark squircle">
                     albo<span>.</span>
