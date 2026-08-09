@@ -1,6 +1,7 @@
 import { PauseIcon, PlayIcon } from "@phosphor-icons/react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "./ui/Button";
+import { cn } from "../lib/utils";
 
 let activeAudio: HTMLAudioElement | null = null;
 
@@ -28,8 +29,8 @@ export function VoiceNotePlayer({
 }) {
     const ref = useRef<HTMLAudioElement>(null);
     const [playing, setPlaying] = useState(false);
-    const [remainingSeconds, setRemainingSeconds] = useState<number | null>(() =>
-        normalizeDuration(durationSeconds),
+    const [remainingSeconds, setRemainingSeconds] = useState<number | null>(
+        () => normalizeDuration(durationSeconds),
     );
 
     useEffect(() => {
@@ -84,10 +85,19 @@ export function VoiceNotePlayer({
 
     return (
         <div
-            className={`voice-note-player voice-note-player--${justify}`}
+            className={cn(
+                "flex min-w-0 items-center gap-2.5 max-[520px]:flex-wrap",
+                justify === "between" ? "justify-between" : "justify-center",
+            )}
         >
             <audio ref={ref} src={src} preload="metadata" />
-            <Button variant="paper" size="sm" sound={false} onClick={toggle}>
+            <Button
+                className="shrink-0"
+                variant="paper"
+                size="sm"
+                sound={false}
+                onClick={toggle}
+            >
                 {playing ? (
                     <PauseIcon weight="fill" />
                 ) : (
@@ -96,19 +106,33 @@ export function VoiceNotePlayer({
                 {playing ? "Pause story" : label}
             </Button>
             <span
-                className="voice-note-wave"
+                className="flex h-6 items-center gap-0.75> text-coral"
                 data-playing={playing}
                 aria-hidden="true"
             >
-                <i />
-                <i />
-                <i />
-                <i />
-                <i />
+                {[8, 16, 22, 16, 8].map((height, index) => (
+                    <i
+                        key={index}
+                        className={cn(
+                            "block w-0.75 origin-center rounded-full bg-current",
+                            playing &&
+                                "animate-[voice-wave_0.68s_ease-in-out_infinite] motion-reduce:animate-none",
+                            playing &&
+                                [
+                                    "[animation-duration:0.58s] [animation-delay:-0.18s]",
+                                    "[animation-duration:0.82s] [animation-delay:-0.46s]",
+                                    "[animation-duration:0.52s] [animation-delay:-0.31s]",
+                                    "[animation-duration:0.74s] [animation-delay:-0.57s]",
+                                    "[animation-duration:0.9s] [animation-delay:-0.24s]",
+                                ][index],
+                        )}
+                        style={{ height }}
+                    />
+                ))}
             </span>
             {duration && (
                 <span
-                    className="voice-note-duration tabular"
+                    className="ms-auto text-[0.78rem] text-graphite font-[750] tabular-nums max-[520px]:ms-0"
                     aria-label={`${duration} remaining`}
                 >
                     {duration}

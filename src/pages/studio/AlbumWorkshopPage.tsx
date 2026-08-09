@@ -25,6 +25,7 @@ import { Link, useParams } from "react-router-dom";
 import { UploadProgress } from "../../components/UploadProgress";
 import { VoiceNoteRecorder } from "../../components/VoiceNoteRecorder";
 import { Button } from "../../components/ui/Button";
+import { buttonClassName } from "../../components/ui/buttonStyles";
 import {
     useAlbumQuery,
     usePhotosQuery,
@@ -155,37 +156,56 @@ export function AlbumWorkshopPage() {
         reorder.mutate(arrayMove(photos.data, oldIndex, newIndex));
     };
     if (album.isLoading)
-        return <div className="page-loader">Opening the worktable…</div>;
+        return (
+            <div className="grid min-h-[60vh] place-items-center font-display text-2xl italic">
+                Opening the worktable…
+            </div>
+        );
     if (!album.data)
         return (
-            <div className="paper-message">This album could not be found.</div>
+            <div className="mx-auto my-16 max-w-[650px] border-[1.5px] border-dashed border-ink px-8 py-16 text-center">
+                This album could not be found.
+            </div>
         );
     return (
-        <div className="workshop">
-            <header className="workshop-bar">
-                <Link to="/studio" className="back-link squircle">
+        <div className="m-auto max-w-[1400px] p-[clamp(2rem,5vw,4rem)] max-[800px]:px-4 max-[800px]:py-8">
+            <header className="grid grid-cols-[auto_1fr_auto] items-center gap-8 border-b-[1.5px] border-dashed border-ink pb-6 max-[800px]:grid-cols-[1fr_auto] max-[800px]:[&>div]:col-span-full max-[800px]:[&>div]:row-start-2">
+                <Link
+                    to="/studio"
+                    className="inline-flex items-center gap-1.5 font-[750] supports-[corner-shape:squircle]:[corner-shape:squircle]"
+                >
                     <ArrowLeftIcon /> Shelf
                 </Link>
                 <div>
-                    <p className="eyebrow">On the worktable</p>
-                    <h1>{album.data.title}</h1>
+                    <p className="mb-3 text-xs font-extrabold tracking-[0.13em] uppercase">
+                        On the worktable
+                    </p>
+                    <h1 className="m-0 text-[clamp(2.4rem,5vw,4rem)]">
+                        {album.data.title}
+                    </h1>
                 </div>
-                <nav>
+                <nav className="flex items-center gap-4 max-[800px]:gap-1.5">
                     <Link
-                        className="button button--paper button--sm squircle"
+                        className={buttonClassName({
+                            variant: "paper",
+                            size: "sm",
+                        })}
                         to="share"
                     >
                         <ShareNetworkIcon /> Share
                     </Link>
                     <Link
-                        className="button button--paper button--sm squircle"
+                        className={buttonClassName({
+                            variant: "paper",
+                            size: "sm",
+                        })}
                         to="settings"
                     >
                         <GearIcon /> Settings
                     </Link>
                 </nav>
             </header>
-            <section className="inside-cover">
+            <section className="my-12 grid grid-cols-2 gap-8 border-[1.5px] border-ink bg-[#e6d7a6] p-10 shadow-paper max-[800px]:grid-cols-1">
                 <div>
                     <h2>
                         {album.data.description || "The story starts here."}
@@ -211,7 +231,7 @@ export function AlbumWorkshopPage() {
                     />
                 </div>
             </section>
-            <section className="upload-strip">
+            <section className="flex flex-wrap items-center justify-between gap-4 border-[1.5px] border-dashed border-ink bg-white/40 p-6 [&_h2]:m-0 [&_p]:m-0">
                 <input
                     ref={input}
                     hidden
@@ -258,7 +278,7 @@ export function AlbumWorkshopPage() {
                 </AnimatePresence>
             </section>
             {photos.data?.length === 0 ? (
-                <div className="empty-worktable">
+                <div className="mx-auto my-16 max-w-[650px] border-[1.5px] border-dashed border-ink px-8 py-16 text-center">
                     <h2>Nothing on the table yet.</h2>
                     <p>
                         Add a few photographs. You can rearrange them once they
@@ -275,7 +295,7 @@ export function AlbumWorkshopPage() {
                         items={photos.data?.map((p) => p.id) ?? []}
                         strategy={rectSortingStrategy}
                     >
-                        <div className="photo-worktable">
+                        <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-x-8 gap-y-12 px-4 py-16 max-[520px]:grid-cols-1 max-[520px]:px-0">
                             {photos.data?.map((photo) => (
                                 <SortablePhoto
                                     key={photo.id}

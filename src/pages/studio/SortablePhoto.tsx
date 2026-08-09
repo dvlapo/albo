@@ -15,6 +15,7 @@ import {
     useDeletePhotoVoiceNote,
     useUploadPhotoVoiceNote,
 } from "../../hooks/queries/voice-notes";
+import { cn } from "../../lib/utils";
 
 export function SortablePhoto({
     photo,
@@ -48,10 +49,15 @@ export function SortablePhoto({
         <article
             ref={sortable.setNodeRef}
             style={style}
-            className={`workshop-photo${arriving ? " workshop-photo--arriving" : ""}${sortable.isDragging ? " workshop-photo--dragging" : ""}`}
+            className={cn(
+                "relative border border-black/20 bg-paper-bright p-[0.7rem] shadow-[5px_7px_15px_rgba(42,37,28,0.2)]",
+                arriving && "animate-[photo-arrive_220ms_var(--ease-out)_both]",
+                sortable.isDragging &&
+                    "z-10 shadow-[8px_12px_24px_rgba(42,37,28,0.28)] [&_.drag-handle]:cursor-grabbing",
+            )}
         >
             <button
-                className="drag-handle"
+                className="drag-handle absolute -top-[18px] left-[calc(50%_-_22px)] z-2 h-11 w-11 cursor-grab touch-none border-[1.5px] border-ink bg-yellow"
                 aria-label="Reorder photo"
                 {...sortable.attributes}
                 {...sortable.listeners}
@@ -59,15 +65,17 @@ export function SortablePhoto({
                 <DotsSixVerticalIcon />
             </button>
             <img
+                className="aspect-4/3 w-full object-cover outline outline-1 outline-black/10"
                 src={photo.url}
                 alt={photo.description ?? "Album photograph"}
             />
             {cover && (
-                <span className="cover-badge">
+                <span className="absolute top-5 left-5 flex items-center gap-1 border border-ink bg-yellow px-2 py-1 text-[0.7rem] font-extrabold">
                     <StarIcon weight="fill" /> Cover
                 </span>
             )}
             <textarea
+                className="min-h-[70px] w-full resize-y border-0 bg-transparent px-1.5 pt-4 pb-1.5 font-display text-[1.05rem] italic"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 onBlur={() =>
@@ -77,7 +85,7 @@ export function SortablePhoto({
                 placeholder="Write what happened…"
                 aria-label="Photo description"
             />
-            <div className="photo-actions">
+            <div className="flex justify-between">
                 <Button
                     variant="ghost"
                     size="sm"
@@ -96,8 +104,8 @@ export function SortablePhoto({
                     <TrashIcon /> Remove
                 </Button>
             </div>
-            <details>
-                <summary>
+            <details className="border-t border-dashed border-ink px-1.5 py-3">
+                <summary className="flex cursor-pointer gap-1.5 font-[750]">
                     <MicrophoneIcon />{" "}
                     {photo.voiceNotes?.[0]
                         ? "Listen to the story"

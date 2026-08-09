@@ -22,16 +22,27 @@ export function AlbumSettingsPage() {
     const [deleteError, setDeleteError] = useState("");
 
     if (!album.data)
-        return <div className="page-loader">Opening settings…</div>;
+        return (
+            <div className="grid min-h-[60vh] place-items-center font-display text-2xl italic">
+                Opening settings…
+            </div>
+        );
 
     return (
-        <div className="form-page">
-            <Link to={`/studio/albums/${albumId}`} className="back-link squircle">
+        <div className="m-auto max-w-[1400px] p-[clamp(2rem,5vw,4rem)] max-[800px]:px-4 max-[800px]:py-8">
+            <Link
+                to={`/studio/albums/${albumId}`}
+                className="mb-8 inline-flex items-center gap-1.5 font-[750] supports-[corner-shape:squircle]:[corner-shape:squircle]"
+            >
                 <ArrowLeftIcon /> Back to album
             </Link>
-            <section className="paper-panel settings">
-                <p className="eyebrow">Inside cover details</p>
-                <h1>Album settings</h1>
+            <section className="m-auto max-w-[760px] border-[1.5px] border-ink bg-paper-bright p-[clamp(2rem,5vw,4rem)] shadow-paper">
+                <p className="mb-3 text-xs font-extrabold tracking-[0.13em] uppercase">
+                    Inside cover details
+                </p>
+                <h1 className="text-[clamp(3rem,6vw,5.5rem)]">
+                    Album settings
+                </h1>
                 <Formik
                     initialValues={{
                         title: album.data.title,
@@ -41,7 +52,7 @@ export function AlbumSettingsPage() {
                     onSubmit={async (values) => update.mutateAsync(values)}
                 >
                     {({ isSubmitting }) => (
-                        <Form className="album-form">
+                        <Form className="grid gap-4">
                             <TextField name="title" label="Album title" />
                             <TextAreaField
                                 name="description"
@@ -57,7 +68,7 @@ export function AlbumSettingsPage() {
                         </Form>
                     )}
                 </Formik>
-                <div className="danger-zone">
+                <div className="mt-12 border-t-2 border-coral pt-8">
                     <h2>Remove this album</h2>
                     <p className="my-2">
                         This permanently removes its photos, voice notes, and

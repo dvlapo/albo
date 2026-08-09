@@ -35,22 +35,29 @@ export function SharePage() {
         window.setTimeout(() => setCopied(""), 1500);
     };
     return (
-        <div className="form-page wide">
-            <Link to={`/studio/albums/${albumId}`} className="back-link squircle">
+        <div className="m-auto max-w-[1200px] p-[clamp(2rem,5vw,4rem)] max-[800px]:px-4 max-[800px]:py-8">
+            <Link
+                to={`/studio/albums/${albumId}`}
+                className="mb-8 inline-flex items-center gap-1.5 font-[750] supports-[corner-shape:squircle]:[corner-shape:squircle]"
+            >
                 <ArrowLeftIcon /> Back to album
             </Link>
-            <header className="page-intro">
+            <header className="mb-16 flex items-end justify-between gap-8 max-[800px]:flex-col max-[800px]:items-start">
                 <div>
-                    <p className="eyebrow">Pass it around</p>
-                    <h1>Invite someone to the coffee table.</h1>
-                    <p>
+                    <p className="mb-3 text-xs font-extrabold tracking-[0.13em] uppercase">
+                        Pass it around
+                    </p>
+                    <h1 className="mb-2 text-[clamp(3rem,6vw,5.5rem)]">
+                        Invite someone to the coffee table.
+                    </h1>
+                    <p className="text-graphite">
                         Each link opens only this album. Add a passkey when the
                         stories are just for family.
                     </p>
                 </div>
             </header>
-            <div className="share-layout">
-                <section className="paper-panel">
+            <div className="grid grid-cols-[0.8fr_1.2fr] gap-8 max-[800px]:grid-cols-1">
+                <section className="max-w-[760px] border-[1.5px] border-ink bg-paper-bright p-[clamp(2rem,5vw,4rem)] shadow-paper">
                     <h2>Make a new link</h2>
                     <Formik
                         initialValues={{ passkey: "", expiresAt: "" }}
@@ -74,7 +81,7 @@ export function SharePage() {
                         }}
                     >
                         {({ isSubmitting }) => (
-                            <Form className="album-form">
+                            <Form className="grid gap-4">
                                 <TextField
                                     name="passkey"
                                     label="Passkey (optional)"
@@ -99,12 +106,15 @@ export function SharePage() {
                         )}
                     </Formik>
                 </section>
-                <section className="paper-panel">
+                <section className="max-w-[760px] border-[1.5px] border-ink bg-paper-bright p-[clamp(2rem,5vw,4rem)] shadow-paper">
                     <h2>Active links</h2>
                     {links.data?.length === 0 && <p>No active links yet.</p>}
-                    <div className="link-list">
+                    <div className="grid gap-3">
                         {links.data?.map((link) => (
-                            <article key={link.id}>
+                            <article
+                                className="grid grid-cols-[1fr_auto_auto] items-center gap-3 border-b border-dashed border-ink pb-3 max-[520px]:grid-cols-[1fr_auto] max-[520px]:[&>button:last-child]:col-start-2"
+                                key={link.id}
+                            >
                                 <div>
                                     <strong>
                                         Shared{" "}
@@ -112,7 +122,7 @@ export function SharePage() {
                                             link.createdAt,
                                         ).toLocaleDateString()}
                                     </strong>
-                                    <small>
+                                    <small className="block text-graphite">
                                         {link.expiresAt
                                             ? `Expires ${new Date(link.expiresAt).toLocaleString()}`
                                             : "No expiry"}

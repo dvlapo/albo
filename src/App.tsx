@@ -41,7 +41,7 @@ export default function App() {
             <Route
                 path="*"
                 element={
-                    <main className="guest-state">
+                    <main className="grid min-h-dvh place-items-center p-8 text-center">
                         <h1>That page slipped out of the album.</h1>
                         <a href="/">Return home</a>
                     </main>

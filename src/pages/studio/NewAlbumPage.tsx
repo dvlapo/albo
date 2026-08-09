@@ -10,13 +10,20 @@ export function NewAlbumPage() {
     const create = useCreateAlbum();
     const navigate = useNavigate();
     return (
-        <div className="form-page">
-            <Link to="/studio" className="back-link squircle">
+        <div className="m-auto max-w-[1400px] p-[clamp(2rem,5vw,4rem)] max-[800px]:px-4 max-[800px]:py-8">
+            <Link
+                to="/studio"
+                className="mb-8 inline-flex items-center gap-1.5 font-[750] supports-[corner-shape:squircle]:[corner-shape:squircle]"
+            >
                 <ArrowLeftIcon /> Back to the shelf
             </Link>
-            <section className="new-album-book">
-                <p className="eyebrow">A blank cover</p>
-                <h1>What should we call this chapter?</h1>
+            <section className="m-auto max-w-[760px] border-[1.5px] border-l-[12px] border-ink border-l-coral bg-paper-bright p-[clamp(2rem,5vw,4rem)] shadow-paper">
+                <p className="mb-3 text-xs font-extrabold tracking-[0.13em] uppercase">
+                    A blank cover
+                </p>
+                <h1 className="text-[clamp(3rem,6vw,5.5rem)]">
+                    What should we call this chapter?
+                </h1>
                 <Formik
                     initialValues={{ title: "", description: "" }}
                     validationSchema={albumSchema}
@@ -26,7 +33,7 @@ export function NewAlbumPage() {
                     }}
                 >
                     {({ isSubmitting }) => (
-                        <Form className="album-form">
+                        <Form className="grid gap-4">
                             <TextField
                                 name="title"
                                 label="Album title"

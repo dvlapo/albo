@@ -19,23 +19,26 @@ export function TextField({
     const [passwordVisible, setPasswordVisible] = useState(false);
 
     return (
-        <div className={cn("field", className)}>
+        <div className={cn("grid gap-1.5 text-xs font-[750]", className)}>
             <label htmlFor={inputId}>{label}</label>
-            <div className={cn(isPassword && "password-field")}>
+            <div className={cn(isPassword && "relative")}>
                 <input
                     {...field}
                     {...props}
                     id={inputId}
                     name={name}
                     type={isPassword && passwordVisible ? "text" : props.type}
-                    className="paper-input squircle"
+                    className={cn(
+                        "w-full resize-y border-[1.5px] border-ink bg-paper-bright px-[0.85rem] py-3 text-base transition-shadow duration-150 focus:outline-none focus:shadow-[3px_3px_0_var(--color-ink)] rounded-[5px_7px_5px_6px] supports-[corner-shape:squircle]:[corner-shape:squircle]",
+                        isPassword && "pe-13",
+                    )}
                     aria-invalid={meta.touched && Boolean(meta.error)}
                 />
                 {isPassword && (
                     <button
                         data-cuelume-toggle="toggle"
                         type="button"
-                        className="password-toggle"
+                        className="absolute inset-y-0 inset-e-1 grid min-h-11 w-11 cursor-pointer place-items-center rounded-md border-0 bg-transparent text-ink transition-[transform,background-color] duration-150 ease-out active:scale-[0.96] [&_svg]:size-5"
                         aria-label={
                             passwordVisible ? "Hide password" : "Show password"
                         }
@@ -52,7 +55,11 @@ export function TextField({
                     </button>
                 )}
             </div>
-            <ErrorMessage name={name} component="small" />
+            <ErrorMessage
+                name={name}
+                component="small"
+                className="text-[#872415] font-bold"
+            />
         </div>
     );
 }
@@ -67,15 +74,19 @@ export function TextAreaField({
     rows?: number;
 }) {
     return (
-        <label className="field">
+        <label className="grid gap-1.5 text-xs font-[750]">
             <span>{label}</span>
             <Field
                 as="textarea"
                 name={name}
                 rows={rows}
-                className="paper-input"
+                className="w-full resize-y border-[1.5px] border-ink bg-paper-bright px-[0.85rem] py-3 text-base transition-shadow duration-150 focus:outline-none focus:shadow-[3px_3px_0_var(--color-ink)] rounded-[5px_7px_5px_6px]"
             />
-            <ErrorMessage name={name} component="small" />
+            <ErrorMessage
+                name={name}
+                component="small"
+                className="text-[#872415] font-bold"
+            />
         </label>
     );
 }

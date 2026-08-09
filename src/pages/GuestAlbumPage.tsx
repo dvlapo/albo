@@ -66,8 +66,8 @@ export function GuestAlbumPage() {
     }, [fetchAlbum, token, verify]);
     if (state === "loading")
         return (
-            <div className="guest-state">
-                <span className="wordmark">
+            <div className="grid min-h-dvh place-items-center p-8 text-center">
+                <span className="text-[1.65rem] leading-none font-extrabold tracking-[-0.08em] [&_span]:text-coral">
                     albo<span>.</span>
                 </span>
                 <p>Opening the album…</p>
@@ -75,20 +75,20 @@ export function GuestAlbumPage() {
         );
     if (state === "passkey")
         return (
-            <main className="guest-gate">
-                <Link to="/" className="wordmark squircle">
+            <main className="grid min-h-dvh place-items-center p-8 text-center">
+                <Link to="/" className="absolute top-8 left-8 text-[1.65rem] leading-none font-extrabold tracking-[-0.08em] supports-[corner-shape:squircle]:[corner-shape:squircle] [&_span]:text-coral">
                     albo<span>.</span>
                 </Link>
-                <section className="passkey-card">
+                <section className="max-w-[500px] -rotate-1 border-2 border-ink bg-[#e4cd7b] p-12 text-left shadow-[8px_10px_0_var(--color-ink)] [&>svg]:size-11">
                     <KeyIcon />
-                    <p className="eyebrow">A private album</p>
-                    <h1>This one needs the family word.</h1>
+                    <p className="mb-3 text-xs font-extrabold tracking-[0.13em] uppercase">A private album</p>
+                    <h1 className="text-5xl">This one needs the family word.</h1>
                     <Formik
                         initialValues={{ passkey: "" }}
                         onSubmit={async (values) => verify(values.passkey)}
                     >
                         {({ isSubmitting }) => (
-                            <Form>
+                            <Form className="grid gap-4 text-left">
                                 <TextField
                                     name="passkey"
                                     label="Passkey"
@@ -109,8 +109,8 @@ export function GuestAlbumPage() {
         );
     if (state === "missing" || state === "cooldown" || state === "error")
         return (
-            <div className="guest-state">
-                <span className="wordmark">
+            <div className="grid min-h-dvh place-items-center p-8 text-center">
+                <span className="text-[1.65rem] leading-none font-extrabold tracking-[-0.08em] [&_span]:text-coral">
                     albo<span>.</span>
                 </span>
                 <h1>
@@ -127,25 +127,25 @@ export function GuestAlbumPage() {
                           ? "Too many passkey attempts. Try again in about a minute."
                           : message}
                 </p>
-                <Link to="/" className="squircle">
+                <Link to="/" className="underline underline-offset-4 supports-[corner-shape:squircle]:[corner-shape:squircle]">
                     Return to Albo
                 </Link>
             </div>
         );
     if (!album) return null;
     return (
-        <main className="guest-album overflow-x-hidden">
-            <header>
-                <Link to="/" className="wordmark squircle">
+        <main className="min-h-dvh overflow-x-hidden p-6">
+            <header className="m-auto grid max-w-[1200px] grid-cols-[auto_1fr] items-start gap-12 max-[800px]:grid-cols-1 max-[800px]:gap-4">
+                <Link to="/" className="text-[1.65rem] leading-none font-extrabold tracking-[-0.08em] supports-[corner-shape:squircle]:[corner-shape:squircle] [&_span]:text-coral max-[800px]:text-left">
                     albo<span>.</span>
                 </Link>
-                <div>
-                    <p className="eyebrow my-12!">
+                <div className="text-center">
+                    <p className="my-12 mb-3 text-xs font-extrabold tracking-[0.13em] uppercase">
                         You’ve been handed an album
                     </p>
-                    <h1>{album.title}</h1>
-                    <p>{album.description}</p>
-                    <div className="w-fit mx-auto">
+                    <h1 className="mb-1 text-[clamp(2.5rem,5vw,4.5rem)]">{album.title}</h1>
+                    <p className="mb-2">{album.description}</p>
+                    <div className="mx-auto w-fit">
                         {album.voiceNotes[0] && (
                             <VoiceNotePlayer
                                 src={album.voiceNotes[0].url}

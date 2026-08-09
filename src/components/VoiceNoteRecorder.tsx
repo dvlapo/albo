@@ -159,15 +159,15 @@ export function VoiceNoteRecorder({
     };
 
     return (
-        <div className="recorder">
+        <div className="mt-3">
             {!recording && !blob && visibleNote && (
-                <div className="voice-note-existing">
+                <div className="mt-3 grid gap-2.5 bg-paper-bright/68 p-3 shadow-[0_1px_0_rgba(23,23,20,0.18),0_6px_16px_rgba(79,64,36,0.09)] rounded-[10px_8px_11px_9px]">
                     <VoiceNotePlayer
                         src={visibleNote.url}
                         label="Play saved story"
                         durationSeconds={visibleNote.durationSeconds}
                     />
-                    <div className="voice-note-actions">
+                    <div className="flex justify-end gap-1 border-t border-dashed border-ink/25 pt-2">
                         <Button
                             variant="ghost"
                             size="sm"
@@ -180,7 +180,7 @@ export function VoiceNoteRecorder({
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="voice-note-delete"
+                                className="text-[#872415]"
                                 disabled={deleting}
                                 onClick={() => {
                                     setDeleteError("");
@@ -201,15 +201,21 @@ export function VoiceNoteRecorder({
             {recording && (
                 <Button variant="coral" size="sm" onClick={stop}>
                     <StopIcon weight="fill" /> Stop{" "}
-                    <span className="tabular">
+                    <span className="tabular-nums">
                         {Math.floor(elapsed / 60)}:
                         {String(elapsed % 60).padStart(2, "0")}
                     </span>
                 </Button>
             )}
             {blob && uploadStatus !== "success" && (
-                <div className="recording-preview">
-                    {previewUrl && <audio controls src={previewUrl} />}
+                <div className="flex flex-wrap items-center gap-2">
+                    {previewUrl && (
+                        <audio
+                            className="max-w-full"
+                            controls
+                            src={previewUrl}
+                        />
+                    )}
                     <Button
                         variant="ink"
                         size="sm"
@@ -243,7 +249,7 @@ export function VoiceNoteRecorder({
                 />
             )}
             {error && uploadStatus == null && (
-                <small className="form-error" role="alert">
+                <small className="text-[#872415] font-bold" role="alert">
                     {error}
                 </small>
             )}
