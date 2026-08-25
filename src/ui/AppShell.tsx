@@ -15,12 +15,24 @@ export function AppShell() {
                 >
                     albo<span>.</span>
                 </Link>
-                <nav className="flex items-center gap-4 max-[800px]:hidden" aria-label="Studio navigation">
-                    <NavLink className="flex items-center gap-1.5 font-[750]" to="/studio" end>
+                <nav
+                    className="flex items-center gap-4 max-[800px]:hidden"
+                    aria-label="Studio navigation"
+                >
+                    <NavLink
+                        className="flex items-center gap-1.5 font-[750]"
+                        to="/studio"
+                        end
+                    >
                         <SquaresFourIcon weight="bold" /> Albums
                     </NavLink>
                 </nav>
-                <Button variant="paper" size="sm" className="max-[520px]:w-11 max-[520px]:px-0 max-[520px]:text-[0] max-[520px]:[&_svg]:size-5" onClick={logout}>
+                <Button
+                    variant="paper"
+                    size="sm"
+                    className="max-[520px]:[&_svg]:size-5"
+                    onClick={logout}
+                >
                     <SignOutIcon /> Sign out
                 </Button>
             </header>

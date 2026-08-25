@@ -7,7 +7,7 @@ export function StudioPage() {
     const albums = useAlbumsQuery();
 
     return (
-        <div className="m-auto max-w-[1400px] p-[clamp(2rem,5vw,4rem)] max-[800px]:px-4 max-[800px]:py-8">
+        <div className="m-auto max-w-350 p-[clamp(2rem,5vw,4rem)] max-[800px]:px-4 max-[800px]:py-8">
             <header className="mb-16 flex items-end justify-between gap-8 max-[800px]:flex-col max-[800px]:items-start">
                 <div>
                     <p className="mb-3 text-xs font-extrabold tracking-[0.13em] uppercase">
@@ -38,7 +38,7 @@ export function StudioPage() {
                 >
                     {[1, 2, 3].map((i) => (
                         <div
-                            className="min-h-[380px] animate-[shimmer_1.4s_linear_infinite] bg-linear-to-r from-[#e4dfd2] via-[#f9f6ed] to-[#e4dfd2] bg-size-[200%]"
+                            className="min-h-95 animate-[shimmer_1.4s_linear_infinite] bg-linear-to-r from-[#e4dfd2] via-[#f9f6ed] to-[#e4dfd2] bg-size-[200%]"
                             key={i}
                         />
                     ))}
@@ -46,7 +46,7 @@ export function StudioPage() {
             )}
 
             {albums.isError && (
-                <div className="mx-auto my-16 max-w-[650px] border-[1.5px] border-dashed border-ink px-8 py-16 text-center">
+                <div className="mx-auto my-16 max-w-162.5 border-[1.5px] border-dashed border-ink px-8 py-16 text-center">
                     <h2>The shelf wouldn’t load.</h2>
                     <p>{albums.error.message}</p>
                     <button
@@ -59,8 +59,8 @@ export function StudioPage() {
             )}
 
             {albums.data?.length === 0 && (
-                <div className="mx-auto my-16 max-w-[650px] border-[1.5px] border-dashed border-ink px-8 py-16 text-center">
-                    <ImagesIcon className="mx-auto size-[54px]" />
+                <div className="mx-auto my-16 max-w-162.5 border-[1.5px] border-dashed border-ink px-8 py-16 text-center">
+                    <ImagesIcon className="mx-auto size-13.5" />
                     <h2 className="text-[2.5rem]">Your shelf is waiting.</h2>
                     <p>
                         Every great album starts with one photo and the story
@@ -90,7 +90,7 @@ export function StudioPage() {
                         <div className="grid aspect-4/5 place-items-center overflow-hidden border-2 border-ink bg-[#445b49] p-4 shadow-[6px_8px_0_var(--color-ink)]">
                             {album.coverPhoto ? (
                                 <img
-                                    className="h-full w-full object-cover outline outline-1 outline-black/10"
+                                    className="h-full w-full object-cover outline outline-black/10"
                                     src={album.coverPhoto.url}
                                     alt=""
                                 />
